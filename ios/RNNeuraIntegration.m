@@ -12,6 +12,28 @@ return dispatch_get_main_queue();
 
 RCT_EXPORT_MODULE(RNNeuraIntegration);
 
+RCT_REMAP_METHOD(authenticateAnonWithExternalId, 
+    externalId:(NSString *)externalId
+    authenticateResolver:(RCTPromiseResolveBlock)resolve 
+    rejecter:(RCTPromiseRejectBlock)reject)
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NeuraAnonymousAuthenticationRequest *request = [NeuraAnonymousAuthenticationRequest new];
+
+        NExternalId *externalIdObj = [[NExternalId alloc] initWithExternalId:externalId];
+        request.externalId = externalIdObj;
+
+        [NeuraSDK.shared authenticateWithRequest:request callback:^(NeuraAuthenticationResult *result) {
+            if (result.success) {
+                resolve(result.info.accessToken);
+            } else {
+                NeuraAPIError *err = result.error;
+                reject([NSString stringWithFormat: @"%lu", (long)err.code], err.localizedDescription, err);
+            }
+        }];
+    });
+}
+
 RCT_REMAP_METHOD(authenticateAnon, authenticateResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -35,7 +57,7 @@ RCT_REMAP_METHOD(isAuthenticated, isAuthenticatedResolver:(RCTPromiseResolveBloc
 
 RCT_REMAP_METHOD(getUserAccessToken, getUserAccessTokenResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    resolve([NeuraSDK.shared appToken]);
+    resolve([NeuraSDK.shared accessToken]);
 }
 
 RCT_REMAP_METHOD(getUserId, getUserIdResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
@@ -98,4 +120,12 @@ RCT_EXPORT_METHOD(neuraLogout)
         // Perform tasks after the callback has returned
     }];
 }
+
+RCT_EXPORT_METHOD(setExternalId:(NSString *)externalId)
+{
+    if (!NeuraSDK.shared.isAuthenticated) return;
+    NExternalId *externalIdObj = [[NExternalId alloc] initWithExternalId:externalId];
+    NeuraSDK.shared.externalId = externalIdObj;
+}
+
 @end

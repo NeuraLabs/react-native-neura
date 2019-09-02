@@ -151,9 +151,8 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
 
     }
 
-
     @ReactMethod
-    private void authenticateAnon(final Promise promise) {
+    private void authenticateAnonWithExternalId(final @Nullable String externalId, final Promise promise) {
         Log.i(getClass().getSimpleName(), "Anon auth starting");
 
         if (NeuraIntegrationSingleton.getInstance().getNeuraApiClient().isLoggedIn()) {
@@ -181,6 +180,10 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
                                 //Instantiate AnonymousAuthenticationRequest instance.
                                 AnonymousAuthenticationRequest request = new AnonymousAuthenticationRequest(pushToken);
 
+                                if (externalId != null) {
+                                    request.setExternalId(externalId);
+                                }
+
                                 //Pass the AnonymousAuthenticationRequest instance and register a call back for success and failure events.
                                 NeuraIntegrationSingleton.getInstance().getNeuraApiClient().authenticate(request, new AnonymousAuthenticateCallBack() {
                                     @Override
@@ -205,6 +208,11 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
 
                     });
         }
+    }
+
+    @ReactMethod
+    private void authenticateAnon(final Promise promise) {
+        authenticateAnonWithExternalId(null, promise);
     }
 
     @ReactMethod
@@ -280,5 +288,10 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void neuraLogout() {
         NeuraIntegrationSingleton.getInstance().getNeuraApiClient().forgetMe(null);
+    }
+
+    @ReactMethod
+    public void setExternalId(String externalId) {
+        NeuraIntegrationSingleton.getInstance().getNeuraApiClient().setExternalId(externalId);
     }
 }
