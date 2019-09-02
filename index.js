@@ -3,8 +3,12 @@ import { NativeModules } from 'react-native';
 const { RNNeuraIntegration } = NativeModules;
 
 module.exports = {
-    authenticateAnon: function() {
-        return RNNeuraIntegration.authenticateAnon();
+    authenticateAnon: function(externalId) {
+        if (externalId !== undefined) {
+            return RNNeuraIntegration.authenticateAnonWithExternalId(externalId);
+        } else {
+            return RNNeuraIntegration.authenticateAnon();
+        }
     },
 
     getUserAccessToken: function() {
@@ -25,6 +29,10 @@ module.exports = {
 
     simulateAnEvent: function(eventName) {
         return RNNeuraIntegration.simulateAnEvent(eventName);
+    },
+
+    setExternalId: function(externalId) {
+        return RNNeuraIntegration.setExternalId(externalId);
     },
 
     subscribeToEvent: function(eventName, eventID, webhookID) {
