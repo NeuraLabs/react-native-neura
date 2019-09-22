@@ -98,12 +98,26 @@ RCT_EXPORT_METHOD(simulateAnEvent:
     }}];
 }
 
-RCT_EXPORT_METHOD(subscribeToEvent:
+RCT_EXPORT_METHOD(subscribeToEventWithWebhook:
                   (NSString *)eventName 
-                  eventID: (NSString *) eventID 
+                  eventID: (NSString *) eventID
                   webhookID: (NSString *) webhookID)
 {
     NSubscription *subscription = [[NSubscription alloc] initWithEventName:eventName identifier:eventID webhookId:webhookID method:NSubscriptionMethodWebhook];
+    [NeuraSDK.shared addSubscription:(subscription) callback:^(NeuraAPIResult * _Nonnull result) {
+        if (!result.success) {
+            RCTLogInfo(@"Error while trying to create subscription: %@, Error: %@", eventID, result.error);
+        } else {
+            RCTLogInfo(@"Created subscription: %@", eventName);
+        }
+    }];
+}
+
+RCT_EXPORT_METHOD(subscribeToEventWithPush:
+                  (NSString *)eventName 
+                  eventID: (NSString *) eventID)
+{
+    NSubscription *subscription = [[NSubscription alloc] initWithEventName:eventName identifier:eventID webhookId:nil method:NSubscriptionMethodPush];
     [NeuraSDK.shared addSubscription:(subscription) callback:^(NeuraAPIResult * _Nonnull result) {
         if (!result.success) {
             RCTLogInfo(@"Error while trying to create subscription: %@, Error: %@", eventID, result.error);
@@ -126,6 +140,14 @@ RCT_EXPORT_METHOD(setExternalId:(NSString *)externalId)
     if (!NeuraSDK.shared.isAuthenticated) return;
     NExternalId *externalIdObj = [[NExternalId alloc] initWithExternalId:externalId];
     NeuraSDK.shared.externalId = externalIdObj;
+}
+
+RCT_EXPORT_METHOD(setUserAttribute:
+                (NSString *)name
+                value: (NSString *) value)
+{
+    if (!NeuraSDK.shared.isAuthenticated) return;
+    [NeuraSDK.shared setUserAttribute:name stringValue:value];
 }
 
 @end

@@ -35,8 +35,16 @@ module.exports = {
         return RNNeuraIntegration.setExternalId(externalId);
     },
 
-    subscribeToEvent: function(eventName, eventID, webhookID) {
-        return RNNeuraIntegration.subscribeToEvent(eventName, eventID, webhookID);
+    subscribeToEventWithWebhook: function(eventName, eventID, webhookID) {
+        return RNNeuraIntegration.subscribeToEventWithWebhook(eventName, eventID, webhookID);
+    },
+
+    subscribeToEventWithPush: function(eventName, eventID) {
+        return RNNeuraIntegration.subscribeToEventWithPush(eventName, eventID);
+    },
+
+    setUserAttribute: function(name, value) {
+        return RNNeuraIntegration.setUserAttribute(name, value);
     },
 
     /**

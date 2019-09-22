@@ -235,8 +235,25 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
     }
     
     @ReactMethod
-    public void subscribeToEvent(String eventName, String eventID, String webhookID, final Promise promise) {
+    public void subscribeToEventWithWebhook(String eventName, String eventID, String webhookID, final Promise promise) {
         NeuraIntegrationSingleton.getInstance().getNeuraApiClient().subscribeToEvent(eventName, eventID, webhookID, new SubscriptionRequestCallbacks(){
+            @Override
+            public void onSuccess(String eventName, Bundle resultData, String identifier) {
+                promise.resolve("Successfully subscribed to event");
+            }
+            
+            @Override
+            public void onFailure(String eventName, Bundle resultData, int errorCode) {
+                String errorMessage = "Failed to subscribe to event. Reason: " +  SDKUtils.errorCodeToString(errorCode);
+                Log.e(getClass().getSimpleName(), errorMessage);
+                promise.reject(SDKUtils.errorCodeToString(errorCode), errorMessage);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void subscribeToEventWithPush(String eventName, String eventID, final Promise promise) {
+        NeuraIntegrationSingleton.getInstance().getNeuraApiClient().subscribeToEvent(eventName, eventID, new SubscriptionRequestCallbacks(){
             @Override
             public void onSuccess(String eventName, Bundle resultData, String identifier) {
                 promise.resolve("Successfully subscribed to event");
@@ -293,5 +310,15 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setExternalId(String externalId) {
         NeuraIntegrationSingleton.getInstance().getNeuraApiClient().setExternalId(externalId);
+    }
+
+    @ReactMethod
+    public void setUserAttribute(String name, String value) {
+        try {
+            NeuraIntegrationSingleton.getInstance().getNeuraApiClient().setUserAttribute(mReactApplicationContext.getApplicationContext(), name, value);
+        }
+        catch (Exception e) {
+            Log.e(getClass().getSimpleName(), e.getMessage());
+        }
     }
 }
