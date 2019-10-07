@@ -43,6 +43,14 @@ module.exports = {
         return RNNeuraIntegration.subscribeToEventWithPush(eventName, eventID);
     },
 
+    subscribeToEventWithBraze: function(eventName, eventID) {
+        return RNNeuraIntegration.subscribeToEventWithBraze(eventName, eventID);
+    },
+
+    subscribeToEventWithSFMC: function(eventName, eventID) {
+        return RNNeuraIntegration.subscribeToEventWithSFMC(eventName, eventID);
+    },
+
     setUserAttribute: function(name, value) {
         return RNNeuraIntegration.setUserAttribute(name, value);
     },

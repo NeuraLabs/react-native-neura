@@ -10,6 +10,7 @@ import com.neura.standalonesdk.util.SDKUtils;
 import com.neura.resources.authentication.AnonymousAuthenticateCallBack;
 import com.neura.resources.authentication.AnonymousAuthenticateData;
 import com.neura.sdk.object.AnonymousAuthenticationRequest;
+import com.neura.sdk.object.SubscriptionMethod;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.neura.resources.user.UserDetailsCallbacks;
 import com.neura.resources.user.UserDetails;
@@ -253,7 +254,41 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void subscribeToEventWithPush(String eventName, String eventID, final Promise promise) {
-        NeuraIntegrationSingleton.getInstance().getNeuraApiClient().subscribeToEvent(eventName, eventID, new SubscriptionRequestCallbacks(){
+        NeuraIntegrationSingleton.getInstance().getNeuraApiClient().subscribeToEvent(eventName, eventID, SubscriptionMethod.PUSH, new SubscriptionRequestCallbacks(){
+            @Override
+            public void onSuccess(String eventName, Bundle resultData, String identifier) {
+                promise.resolve("Successfully subscribed to event");
+            }
+            
+            @Override
+            public void onFailure(String eventName, Bundle resultData, int errorCode) {
+                String errorMessage = "Failed to subscribe to event. Reason: " +  SDKUtils.errorCodeToString(errorCode);
+                Log.e(getClass().getSimpleName(), errorMessage);
+                promise.reject(SDKUtils.errorCodeToString(errorCode), errorMessage);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void subscribeToEventWithBraze(String eventName, String eventID, final Promise promise) {
+        NeuraIntegrationSingleton.getInstance().getNeuraApiClient().subscribeToEvent(eventName, eventID, SubscriptionMethod.BRAZE, new SubscriptionRequestCallbacks(){
+            @Override
+            public void onSuccess(String eventName, Bundle resultData, String identifier) {
+                promise.resolve("Successfully subscribed to event");
+            }
+            
+            @Override
+            public void onFailure(String eventName, Bundle resultData, int errorCode) {
+                String errorMessage = "Failed to subscribe to event. Reason: " +  SDKUtils.errorCodeToString(errorCode);
+                Log.e(getClass().getSimpleName(), errorMessage);
+                promise.reject(SDKUtils.errorCodeToString(errorCode), errorMessage);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void subscribeToEventWithSFMC(String eventName, String eventID, final Promise promise) {
+        NeuraIntegrationSingleton.getInstance().getNeuraApiClient().subscribeToEvent(eventName, eventID, SubscriptionMethod.SFMC, new SubscriptionRequestCallbacks(){
             @Override
             public void onSuccess(String eventName, Bundle resultData, String identifier) {
                 promise.resolve("Successfully subscribed to event");

@@ -127,6 +127,20 @@ RCT_EXPORT_METHOD(subscribeToEventWithPush:
     }];
 }
 
+RCT_EXPORT_METHOD(subscribeToEventWithBraze:
+                  (NSString *)eventName 
+                  eventID: (NSString *) eventID)
+{
+   // Unsupported yet
+}
+
+RCT_EXPORT_METHOD(subscribeToEventWithSFMC:
+                  (NSString *)eventName 
+                  eventID: (NSString *) eventID)
+{
+   // Unsupported yet
+}
+
 RCT_EXPORT_METHOD(neuraLogout)
 {
     if (!NeuraSDK.shared.isAuthenticated) return;
