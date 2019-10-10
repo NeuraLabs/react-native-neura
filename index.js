@@ -51,6 +51,10 @@ module.exports = {
         return RNNeuraIntegration.subscribeToEventWithSFMC(eventName, eventID);
     },
 
+    getSubscriptions: function() {
+        return RNNeuraIntegration.getSubscriptions();
+    },
+
     setUserAttribute: function(name, value) {
         return RNNeuraIntegration.setUserAttribute(name, value);
     },

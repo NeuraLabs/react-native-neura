@@ -1,8 +1,12 @@
 package com.RNpublic.neuraintegration;
 
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableNativeArray;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.InstanceIdResult;
+import com.neura.sdk.object.AppSubscription;
+import com.neura.sdk.service.GetSubscriptionsCallbacks;
 import com.neura.sdk.service.SimulateEventCallBack;
 import com.neura.sdk.service.SubscriptionRequestCallbacks;
 import com.neura.standalonesdk.engagement.EngagementFeatureAction;
@@ -32,6 +36,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
+
+import java.util.List;
 
 
 public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
@@ -297,6 +303,29 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
             @Override
             public void onFailure(String eventName, Bundle resultData, int errorCode) {
                 String errorMessage = "Failed to subscribe to event. Reason: " +  SDKUtils.errorCodeToString(errorCode);
+                Log.e(getClass().getSimpleName(), errorMessage);
+                promise.reject(SDKUtils.errorCodeToString(errorCode), errorMessage);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void getSubscriptions(final Promise promise) {
+        NeuraIntegrationSingleton.getInstance().getNeuraApiClient().getSubscriptions(new GetSubscriptionsCallbacks() {
+            @Override
+            public void onSuccess(List<AppSubscription> subscriptions) {
+                WritableArray result = new WritableNativeArray();
+
+                for (AppSubscription sub : subscriptions) {
+                    result.pushString(sub.eventName);
+                }
+
+                promise.resolve(result);
+            }
+
+            @Override
+            public void onFailure(Bundle resultData, int errorCode) {
+                String errorMessage = "Failed to retrieve subsriptions list. Reason: " +  SDKUtils.errorCodeToString(errorCode);
                 Log.e(getClass().getSimpleName(), errorMessage);
                 promise.reject(SDKUtils.errorCodeToString(errorCode), errorMessage);
             }

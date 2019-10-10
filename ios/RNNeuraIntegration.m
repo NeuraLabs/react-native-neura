@@ -141,6 +141,20 @@ RCT_EXPORT_METHOD(subscribeToEventWithSFMC:
    // Unsupported yet
 }
 
+
+RCT_REMAP_METHOD(getSubscriptions, getSubscriptionsResolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (!NeuraSDK.shared.isAuthenticated) return;
+    [NeuraSDK.shared getSubscriptionsListWithCallback:^(NeuraSubscriptionsListResult * _Nonnull result) {
+        if (!result.success) {
+            RCTLogInfo(@"Error while trying to retrieve subscriptions, Error: %@", result.error);
+        } else {
+            NSArray *eventNames = [result.subscriptions valueForKey:@"eventName"];
+            resolve(eventNames);
+        }
+    }];
+}
+
 RCT_EXPORT_METHOD(neuraLogout)
 {
     if (!NeuraSDK.shared.isAuthenticated) return;
