@@ -55,6 +55,10 @@ module.exports = {
         return RNNeuraIntegration.getSubscriptions();
     },
 
+    removeSubscription: function(eventName, eventID) {
+        return RNNeuraIntegration.removeSubscription(eventName, eventID);
+    },
+
     setUserAttribute: function(name, value) {
         return RNNeuraIntegration.setUserAttribute(name, value);
     },

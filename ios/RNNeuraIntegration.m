@@ -131,14 +131,28 @@ RCT_EXPORT_METHOD(subscribeToEventWithBraze:
                   (NSString *)eventName 
                   eventID: (NSString *) eventID)
 {
-   // Unsupported yet
+    NSubscription *subscription = [[NSubscription alloc] initWithEventName:eventName identifier:eventID webhookId:nil method:NSubscriptionMethodBraze];
+    [NeuraSDK.shared addSubscription:(subscription) callback:^(NeuraAPIResult * _Nonnull result) {
+        if (!result.success) {
+            RCTLogInfo(@"Error while trying to create subscription: %@, Error: %@", eventID, result.error);
+        } else {
+            RCTLogInfo(@"Created subscription: %@", eventName);
+        }
+    }];
 }
 
 RCT_EXPORT_METHOD(subscribeToEventWithSFMC:
                   (NSString *)eventName 
                   eventID: (NSString *) eventID)
 {
-   // Unsupported yet
+    NSubscription *subscription = [[NSubscription alloc] initWithEventName:eventName identifier:eventID webhookId:nil method:NSubscriptionMethodSfmc];
+    [NeuraSDK.shared addSubscription:(subscription) callback:^(NeuraAPIResult * _Nonnull result) {
+        if (!result.success) {
+            RCTLogInfo(@"Error while trying to create subscription: %@, Error: %@", eventID, result.error);
+        } else {
+            RCTLogInfo(@"Created subscription: %@", eventName);
+        }
+    }];
 }
 
 
@@ -151,6 +165,19 @@ RCT_REMAP_METHOD(getSubscriptions, getSubscriptionsResolver:(RCTPromiseResolveBl
         } else {
             NSArray *eventNames = [result.subscriptions valueForKey:@"eventName"];
             resolve(eventNames);
+        }
+    }];
+}
+
+RCT_EXPORT_METHOD(removeSubscription:
+                  (NSString *)eventName 
+                  eventID: (NSString *) eventID)
+{
+    [NeuraSDK.shared removeSubscription:eventID callback:^(NeuraAPIResult * _Nonnull result) {
+        if (!result.success) {
+            RCTLogInfo(@"Error while trying to remove subscription: %@, Error: %@", eventID, result.error);
+        } else {
+            RCTLogInfo(@"Removed subscription: %@", eventName);
         }
     }];
 }

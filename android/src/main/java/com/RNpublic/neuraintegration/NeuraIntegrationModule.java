@@ -165,7 +165,7 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
         if (NeuraIntegrationSingleton.getInstance().getNeuraApiClient().isLoggedIn()) {
             Log.i(getClass().getSimpleName(), "Already Logged In");
             NeuraIntegrationSingleton.getInstance().onAuth();
-            promise.resolve(LoginSuccessMessage);
+            getUserId(promise);
         } else {
             Log.i(getClass().getSimpleName(), "Will attempt to log in");
 
@@ -196,9 +196,10 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
                                     @Override
                                     public void onSuccess(AnonymousAuthenticateData authenticateData) {
                                         NeuraIntegrationSingleton.getInstance().registerAuthStateListener();
-                                        String debug = LoginSuccessMessage + " Neura Id: "  + authenticateData.getNeuraUserId();
+                                        String neuraUserID = authenticateData.getNeuraUserId();
+                                        String debug = LoginSuccessMessage + " Neura Id: "  + neuraUserID;
                                         Log.i(getClass().getSimpleName(), debug);
-                                        promise.resolve(debug);
+                                        promise.resolve(neuraUserID);
                                     }
 
                                     @Override
@@ -333,6 +334,23 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void removeSubscription(String eventName, String eventID, final Promise promise) {
+        NeuraIntegrationSingleton.getInstance().getNeuraApiClient().removeSubscription(eventName, eventID, new SubscriptionRequestCallbacks(){
+            @Override
+            public void onSuccess(String eventName, Bundle resultData, String identifier) {
+                promise.resolve("Successfully removed subscription to event");
+            }
+            
+            @Override
+            public void onFailure(String eventName, Bundle resultData, int errorCode) {
+                String errorMessage = "Failed to remove subscription to event. Reason: " +  SDKUtils.errorCodeToString(errorCode);
+                Log.e(getClass().getSimpleName(), errorMessage);
+                promise.reject(SDKUtils.errorCodeToString(errorCode), errorMessage);
+            }
+        });
+    }
+
+    @ReactMethod
     public void getUserId(final Promise promise) {
         NeuraIntegrationSingleton.getInstance().getNeuraApiClient().getUserDetails(new UserDetailsCallbacks() {
             @Override
@@ -342,7 +360,8 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
 
             @Override
             public void onFailure(Bundle resultData, int errorCode) {
-                promise.reject(new Error());
+                String errorMessage = "Failed to get user ID. Reason: " +  SDKUtils.errorCodeToString(errorCode);
+                promise.reject(SDKUtils.errorCodeToString(errorCode), errorMessage);
             }
         });
     }
