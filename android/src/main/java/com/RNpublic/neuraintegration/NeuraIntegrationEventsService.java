@@ -3,7 +3,7 @@ package com.RNpublic.neuraintegration;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.support.v4.app.NotificationCompat;
+//import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -32,7 +32,7 @@ public class NeuraIntegrationEventsService extends FirebaseMessagingService {
             public void neuraEventDetected(NeuraEvent event) {
                 String eventText = (event != null) ? event.toString() : "couldn't parse data";
                 Log.i(getClass().getSimpleName(), "received Neura event - " + eventText);
-                generateNotification(context, eventText);
+//                generateNotification(context, eventText);
             }
         });
 
@@ -53,25 +53,25 @@ public class NeuraIntegrationEventsService extends FirebaseMessagingService {
         // Instance ID token to your app server.
     }
 
-    private void generateNotification(Context context, String eventText) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        Log.e(getClass().getSimpleName(), "generateNotification");
-
-
-        String appName = "Neura";
-        int stringId = context.getApplicationInfo().labelRes;
-        if (stringId > 0)
-            appName = context.getString(stringId);
-
-        builder.setContentTitle(appName + " received an event")
-                .setContentText(eventText)
-                .setAutoCancel(true)
-                .setWhen(System.currentTimeMillis())
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(eventText));
-
-        Notification notification = builder.build();
-
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify((int) System.currentTimeMillis(), notification);
-    }
+//    private void generateNotification(Context context, String eventText) {
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+//        Log.e(getClass().getSimpleName(), "generateNotification");
+//
+//
+//        String appName = "Neura";
+//        int stringId = context.getApplicationInfo().labelRes;
+//        if (stringId > 0)
+//            appName = context.getString(stringId);
+//
+//        builder.setContentTitle(appName + " received an event")
+//                .setContentText(eventText)
+//                .setAutoCancel(true)
+//                .setWhen(System.currentTimeMillis())
+//                .setStyle(new NotificationCompat.BigTextStyle().bigText(eventText));
+//
+//        Notification notification = builder.build();
+//
+//        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//        notificationManager.notify((int) System.currentTimeMillis(), notification);
+//    }
 }
