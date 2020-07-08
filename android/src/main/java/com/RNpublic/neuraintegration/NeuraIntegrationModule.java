@@ -38,6 +38,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 
 import java.util.List;
+import org.json.JSONObject;
 
 
 public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
@@ -368,7 +369,7 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void simulateAnEvent(String eventName, final Promise promise) {
-        NeuraIntegrationSingleton.getInstance().getNeuraApiClient().simulateAnEvent(eventName, new SimulateEventCallBack(){
+        NeuraIntegrationSingleton.getInstance().getNeuraApiClient().simulateAnEvent(eventName, new JSONObject(), new SimulateEventCallBack(){
             @Override
             public void onSuccess(String s) {
                 String debug = "Fired, check server: ";
