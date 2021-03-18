@@ -19,13 +19,9 @@ Adding the library to the project
 2. Add the following to the `dependencies` {...} section in your App-level `build.gradle`:
 
     ```java
-    implementation ("com.theneura:android-sdk:+") {
-    exclude group: "com.google.android.gms"
-    exclude group: "com.google.firebase"
-    }
-    implementation ("com.google.android.gms:play-services-gcm:16.0.0") 
-    implementation ("com.google.android.gms:play-services-location:16.0.0")
-    implementation ("com.google.android.gms:play-services-awareness:16.0.0")
+    implementation ("com.theneura:android-sdk:+") 
+    implementation ("com.google.android.gms:play-services-gcm:17.0.0") 
+    implementation ("com.google.android.gms:play-services-location:17.0.0")
     implementation "com.android.support:design:${rootProject.ext.supportLibVersion}"
     ```
 
