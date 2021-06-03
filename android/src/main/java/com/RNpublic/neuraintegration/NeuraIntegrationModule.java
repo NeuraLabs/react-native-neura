@@ -4,7 +4,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.neura.sdk.object.AppSubscription;
 import com.neura.sdk.service.GetSubscriptionsCallbacks;
 import com.neura.sdk.service.SimulateEventCallBack;
@@ -15,7 +15,6 @@ import com.neura.resources.authentication.AnonymousAuthenticateCallBack;
 import com.neura.resources.authentication.AnonymousAuthenticateData;
 import com.neura.sdk.object.AnonymousAuthenticationRequest;
 import com.neura.sdk.object.SubscriptionMethod;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.neura.resources.user.UserDetailsCallbacks;
 import com.neura.resources.user.UserDetails;
 
@@ -170,10 +169,10 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
         } else {
             Log.i(getClass().getSimpleName(), "Will attempt to log in");
 
-            FirebaseInstanceId.getInstance().getInstanceId()
-                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(new OnCompleteListener<String>() {
                         @Override
-                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        public void onComplete(@NonNull Task<String> task) {
                             if (!task.isSuccessful()) {
                                 Log.w(TAG, "getInstanceId failed", task.getException());
                                 return;
@@ -181,7 +180,7 @@ public class NeuraIntegrationModule extends ReactContextBaseJavaModule {
 
                             // Get new Instance ID token
                             if (task.getResult() != null) {
-                                String pushToken = task.getResult().getToken();
+                                String pushToken = task.getResult();
 
                                 Log.i(getClass().getSimpleName(), "Neura Push Token:" + pushToken);
 
