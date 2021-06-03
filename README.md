@@ -21,7 +21,7 @@ Adding the library to the project
     ```java
     implementation ("com.theneura:android-sdk:+") 
     implementation ("com.google.android.gms:play-services-gcm:17.0.0") 
-    implementation ("com.google.android.gms:play-services-location:17.0.0")
+    implementation ("com.google.android.gms:play-services-location:18.0.0")
     implementation "com.android.support:design:${rootProject.ext.supportLibVersion}"
     ```
 
