@@ -15,5 +15,5 @@ Pod::Spec.new do |s|
   s.dependency 'React',  '>= 0.13.0', '< 1.0.0'
 
   # The Native Neura-iOS-SDK from cocoapods.
-  s.dependency 'NeuraSDKFramework'
+  s.dependency 'NeuraSwiftSDKFramework'
 end
